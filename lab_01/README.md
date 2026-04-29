@@ -97,7 +97,9 @@ pip3 install grpcio grpcio-tools
 
 ## Генерация кода из .proto
 
-Перед запуском сервера и клиента необходимо сгенерировать вспомогательные файлы из контракта [`auth_service.proto`](auth_service.proto) (нажмите на ссылку, чтобы увидеть код). Это делается командой:
+Перед запуском сервера и клиента необходимо сгенерировать вспомогательные файлы из контракта [`auth_service.proto`](auth_service.proto):
+
+Это делается командой:
 
 ```bash
 python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. auth_service.proto
