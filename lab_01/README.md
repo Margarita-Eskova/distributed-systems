@@ -202,9 +202,9 @@ python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. auth_service
 | Контракт сервиса | [`auth_service.proto`](auth_service.proto) |
 | Код сервера | [`server.py`](server.py) |
 | Код клиента | [`client.py`](client.py) |
-| Отчёт по ЛР №1 | [`README.md`](README.md) |
+| Сгенерированные файлы (сообщения и gRPC) | [`auth_service_pb2.py`](auth_service_pb2.py) и [`auth_service_pb2_grpc.py`](auth_service_pb2_grpc.py) |
 | Скриншоты работы | Папка [`screenshots/`](screenshots) |
-| Сгенерированные файлы | `auth_service_pb2.py`, `auth_service_pb2_grpc.py` (не включены в репозиторий, генерируются автоматически) |
+| Отчёт по ЛР №1 и ссылки на остальные работы | Весь репозиторий: [`distributed-systems`](https://github.com/Margarita-Eskova/distributed-systems/tree/main) |
 
 ## Источники
 
