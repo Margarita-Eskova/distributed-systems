@@ -97,13 +97,23 @@ pip3 install grpcio grpcio-tools
 
 ## Генерация кода из .proto
 
-Перед запуском сервера и клиента необходимо сгенерировать вспомогательные файлы из контракта [`auth_service.proto`](auth_service.proto):
+На основе файла контракта [`auth_service.proto`](auth_service.proto) были сгенерированы вспомогательные файлы для работы с gRPC.
 
-Это делается командой:
+![Листинг .proto](screenshots/2.png)
+*Рисунок 2 — Листинг файла auth_service.proto*
+
+Для генерации вспомогательных файлов из контракта использовалась следующая команда:
 
 ```bash
 python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. auth_service.proto
 ```
+В результате выполнения команды были созданы два файла:
+
+- [`auth_service_pb2.py`](auth_service_pb2.py) — содержит классы для сообщений (`CredentialsRequest`, `AuthResponse`);
+- [`auth_service_pb2_grpc.py`](auth_service_pb2_grpc.py) — содержит классы для серверной и клиентской частей (`AuthServiceServicer`, `AuthServiceStub`).
+
+![Сгенерированные вспомогательные файлы](screenshots/3.png)
+*Рисунок 3 — Сгенерированные вспомогательные файлы*
 
 ## Реализация сервера
 
