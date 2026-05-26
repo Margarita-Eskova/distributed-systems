@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package task;
+
+service TaskService {
+    rpc ScheduleTask (TaskRequest) returns (TaskResponse);
+    rpc AnalyzeTextComplexity (TextRequest) returns (ComplexityResponse);
+    rpc CountKeywordOccurrences (KeywordRequest) returns (KeywordResponse);
+}
+
+message TaskRequest {
+    string task_name = 1;
+    string scheduled_time = 2;
+}
+
+message TaskResponse {
+    string message = 1;
+}
+
+message TextRequest {
+    string text = 1;
+}
+
+message ComplexityResponse {
+    string complexity_level = 1;
+    float readability_index = 2;
+    int32 word_count = 3;
+    int32 sentence_count = 4;
+}
+
+message KeywordRequest {
+    string text = 1;
+    string keyword = 2;
+}
+
+message KeywordResponse {
+    int32 occurrences = 1;
+}
