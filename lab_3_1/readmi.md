@@ -29,7 +29,26 @@
 
 ## Архитектура
 
-### Часть 1. Синхронное взаимодействие (gRPC)
+<img width="566" height="264" alt="{49BBAD06-7FDA-44A2-8C3A-28D5BEA8ED27}" src="https://github.com/user-attachments/assets/c5869dd0-3744-4f51-9177-63c78909f12f" />
+
+### Компоненты архитектуры
+
+| Компонент | Роль | Вход / Зависимости | Выход / Данные | Протокол / Транспорт | Порт / Формат |
+|-----------|------|---------------------|----------------|----------------------|---------------|
+| **Producer (Отправитель)** | Принимает от пользователя тип задачи и JSON-данные, публикует сообщение в очередь RabbitMQ | аргументы командной строки (`task_type`, `json_data`) | JSON-сообщение в очередь `task_queue` RabbitMQ | AMQP 0-9-1 (библиотека Pika) | — |
+| **RabbitMQ (Брокер сообщений)** | Хранит сообщения в очереди до обработки Consumer'ом, обеспечивает отказоустойчивость | очередь `task_queue` (durable = true) | сообщения потребителям | TCP | 5672 (клиент), 15672 (веб) |
+| **Consumer (Получатель)** | Забирает сообщения из очереди, парсит JSON, вызывает gRPC-метод, подтверждает обработку (ack) | RabbitMQ (получение), gRPC Server (вызов) | результат вызова gRPC (строка) | AMQP + gRPC | — |
+| **gRPC Server (Сервер обработки)** | Реализует RPC-методы, выполняет бизнес-логику, возвращает результат | `TaskRequest`, `TextRequest`, `KeywordRequest` | `TaskResponse`, `ComplexityResponse`, `KeywordResponse` | HTTP/2 (gRPC) | 50051 |
+
+**Методы gRPC сервера:**
+
+| Метод | Запрос (Request) | Ответ (Response) | Назначение |
+|-------|------------------|------------------|------------|
+| `ScheduleTask` | `TaskRequest` (task_name, scheduled_time) | `TaskResponse` (message) | Планирование задачи |
+| `AnalyzeTextComplexity` | `TextRequest` (text) | `ComplexityResponse` (level, index, word_count, sentence_count) | Анализ сложности текста |
+| `CountKeywordOccurrences` | `KeywordRequest` (text, keyword) | `KeywordResponse` (occurrences) | Подсчёт вхождений ключевого слова |
+
+### 🐳 Часть 1. Синхронное взаимодействие (gRPC)
 
 Клиент (Consumer внутри системы) напрямую вызывает методы gRPC-сервера и синхронно ожидает ответа.
 
