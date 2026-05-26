@@ -232,7 +232,22 @@ curl -s http://127.0.0.1:5000/api/jobs | python3 -m json.tool
 
 ## Часть 3. Настройка Nginx как обратного прокси
 
-*Выполняется.*
+## Часть 3. Настройка Nginx как обратного прокси
+
+### Задание
+
+Настроить Nginx как обратный прокси для Flask API, чтобы все запросы, приходящие на `/api/`, перенаправлялись на Flask-приложение (порт 5000).
+
+### Выполнение
+
+#### 1. Установка и запуск Nginx
+
+```bash
+sudo apt update
+sudo apt install nginx -y
+sudo systemctl start nginx
+sudo systemctl enable nginx
+```
 
 ---
 
