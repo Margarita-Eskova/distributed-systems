@@ -227,7 +227,5 @@ first_time, all_time, total_messages = sim.run_simulation()
 | Работа с данными | Pandas |
 | Среда выполнения | Ubuntu 20.04 |
 
----
 
-## 📁 Структура проекта
 
