@@ -35,6 +35,18 @@
 
 ## 🔧 Реализация
 
+### Используемые библиотеки
+
+| Библиотека | Версия | Назначение |
+|------------|--------|------------|
+| Python | 3.8.10 | Язык программирования |
+| NumPy | 1.24.4 | Математические вычисления и массивы |
+| Matplotlib | 3.7.5 | Построение графиков и визуализация |
+| Pandas | 2.0.3 | Обработка и анализ данных |
+
+![Установка зависимостей](photos/1.png)
+*Рисунок 1 — Загрузка всех необходимых библиотек*
+
 ### Расписание изменения Fanout
 
 В ходе работы было задано следующее расписание изменения параметра Fanout:
@@ -64,6 +76,74 @@
 
 ---
 
+## 📄 Полный код симуляции
+
+Полный исходный код находится в файле [`gossip_simulation.py`](gossip_simulation.py).
+
+Ниже представлены основные части реализации:
+
+### Класс узла
+
+```python
+class Node:
+    def __init__(self, node_id):
+        self.id = node_id
+        self.knows_failure = False
+```
+### Класс симулятора с адаптивным Fanout
+
+```python
+class TimeBasedFanoutSimulator:
+    def __init__(self, num_nodes, gossip_interval, packet_loss_percent, 
+                 node_failures_percent, time_fanout_schedule):
+        self.nodes = [Node(i) for i in range(num_nodes)]
+        self.interval = gossip_interval
+        self.packet_loss_percent = packet_loss_percent
+        self.time_fanout_schedule = sorted(time_fanout_schedule)
+        self.current_fanout = self.time_fanout_schedule[0][1]
+        self.failed_nodes = set()
+        self.bandwidth_usage = 0
+        self.convergence_history = []
+        self.fanout_history = [self.current_fanout]
+
+    def get_current_fanout(self, current_time):
+        for t, f in self.time_fanout_schedule:
+            if current_time >= t:
+                fanout = f
+            else:
+                break
+        return fanout
+
+    def run_simulation(self, max_time=60):
+        # Основной цикл gossip-распространения
+        # Возвращает (время первого обнаружения, 
+        #          время полной конвергенции,
+        #          количество сообщений)
+```
+
+### Запуск симуляции для варианта 9
+
+```python
+schedule = [
+    (0, 2),    # 0-10 сек: fanout = 2
+    (10, 5),   # 10-20 сек: fanout = 5
+    (20, 8),   # 20-30 сек: fanout = 8
+    (30, 4),   # 30-40 сек: fanout = 4
+    (40, 3),   # 40+ сек: fanout = 3
+]
+
+sim = TimeBasedFanoutSimulator(
+    num_nodes=100,
+    gossip_interval=0.5,
+    packet_loss_percent=5,
+    node_failures_percent=5,
+    time_fanout_schedule=schedule
+)
+
+first_time, all_time, total_messages = sim.run_simulation()
+```
+
+
 ## 📊 Результаты
 
 ### Числовые результаты
@@ -82,25 +162,36 @@
 
 3. **Сетевой трафик (694 сообщения)** — общее количество gossip-сообщений, отправленных за время симуляции. Средняя нагрузка: ≈278 сообщений в секунду.
 
+![Установка зависимостей](photos/5.png)
+*Рисунок 2 — Резултат выполнения кода*
+
 ### 📝 Графики
 
 #### График 1. Конвергенция (распространение информации)
-*[Вставьте сюда скриншот variant9_graphs.png, верхний левый график]*
+
+![Установка зависимостей](photos/6.png)
+*Рисунок 3 — Конвергенция*
 
 График показывает, как доля узлов, знающих о сбое, растет от 0 до 100%. При быстрой конвергенции (2.5 сек) кривая имеет крутой подъем.
 
 #### График 2. Динамическое изменение Fanout
-*[Вставьте сюда скриншот variant9_graphs.png, верхний правый график]*
+
+![Установка зависимостей](photos/7.png)
+*Рисунок 4 — Fanout*
 
 На графике видны ступенчатые изменения Fanout в соответствии с расписанием: 2 → 5 → 8 → 4 → 3.
 
 #### График 3. Скорость распространения информации
-*[Вставьте сюда скриншот variant9_graphs.png, нижний левый график]*
+
+![Установка зависимостей](photos/9.png)
+*Рисунок 5 — Скорость распространения информации*
 
 Столбцы показывают, сколько новых узлов узнавало о сбое в каждом раунде. Пик приходится на первые раунды распространения.
 
 #### График 4. Сетевой трафик
-*[Вставьте сюда скриншот variant9_graphs.png, нижний правый график]*
+
+![Установка зависимостей](photos/8.png)
+*Рисунок 6 — Сетевой график*
 
 График показывает накопленное количество сообщений. Конечное значение — 694 сообщения.
 
