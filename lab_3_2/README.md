@@ -24,7 +24,7 @@
 > | Параметр | Значение |
 > |----------|----------|
 > | Gossip Interval | 0.5 сек |
-> | Gossip Fanout (начальный) | 3 |
+> | Gossip Fanout (начальный) | 2 |
 > | Nodes | 100 |
 > | Packet Loss | 5% |
 > | Node Failures | 5% |
